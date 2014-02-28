@@ -80,7 +80,7 @@ sub get_clade {
 my $seed = $ARGV[0];
 my $target_species = $ARGV[1];
 my $type = $ARGV[2];
-my $result = get_clade('hs',10);
+my $result = get_clade($seed,10);
 my @result = @{$result};
 print Dumper $result;
 
