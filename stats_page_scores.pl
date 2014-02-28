@@ -79,6 +79,7 @@ sub get_clade {
 
 my $seed = $ARGV[0];
 my $target_species = $ARGV[1];
+my $type = $ARGV[2];
 my $result = get_clade('hs',10);
 my @result = @{$result};
 print Dumper \@result;
@@ -98,10 +99,38 @@ my %all_dets;
  	if(defined($seed)){
  		my $genome = join("','",@result);
  		$sth =   $dbh->prepare( "select genome.genome,genes,matches,percent,coverage,domains,superfamilies,average_family_size,percent_duplication,average_length,average_hit_length,domain_combinations,families,unique_architectures,domain,taxonomy from info,genome where genome.genome = info.genome and include in ('y','s') and genome.genome in ('$genome');" );
-	}else{
+		$sth->execute;
+		while (my @temp = $sth->fetchrow_array ) {
+			$domains_dets{$temp[0]}{'Percent with Assignment'} = $temp[3];
+			$domains_dets{$temp[0]}{'Percent of Sequences covered'} = $temp[4];
+			$domains_dets{$temp[0]}{'Number of Superfamilies'} = $temp[6];
+			$domains_dets{$temp[0]}{'Average Sequence Length'} = $temp[9];
+			$domains_dets{$temp[0]}{'Average hit length'} = $temp[10];
+			$domains_dets{$temp[0]}{'Number of Families'} = $temp[12];
+			$domains_dets{$temp[0]}{'Number of Unique Architectures'} = $temp[13];
+			
+			push(@{$all_dets{'Percent with Assignment'}},$temp[3]);
+			push(@{$all_dets{'Percent of Sequences covered'}},$temp[4]);
+			push(@{$all_dets{'Number of Superfamilies'}},$temp[6]);
+			push(@{$all_dets{'Average Sequence Length'}},$temp[9]);
+			push(@{$all_dets{'Average hit length'}},$temp[10]);
+			push(@{$all_dets{'Number of Families'}},$temp[12]);
+			push(@{$all_dets{'Number of Unique Architectures'}},$temp[13]);		
+		}
+		
+		my %stats;
+		foreach my $stat (keys %all_dets){
+			$stats{$stat}{'avg'} = &average($all_dets{$stat});
+			$stats{$stat}{'std'} = &stdev($all_dets{$stat});
+			my $diff = $stats{$stat}{'avg'} - $domains_dets{$seed}{$stat};
+			my $perc = ($diff/$domains_dets{$seed}{$stat})*100;
+			print "$seed\t$stat\t$perc\n";
+		}
+		
+		
+ 	}else{
 		$sth = $dbh->prepare( "select genome.genome,genes,matches,percent,coverage,domains,superfamilies,average_family_size,percent_duplication,average_length,average_hit_length,domain_combinations,families,unique_architectures,domain,taxonomy from info,genome where genome.genome = info.genome and include in ('y','s');" );	
-	}
-	$sth->execute;
+		$sth->execute;
 	while (my @temp = $sth->fetchrow_array ) {
 		$domains_dets{$temp[14]}{$temp[0]}{'Percent with Assignment'} = $temp[3];
 		$domains_dets{$temp[14]}{$temp[0]}{'Percent of Sequences covered'} = $temp[4];
@@ -144,6 +173,7 @@ my %all_dets;
 	        foreach my $genome (keys %{$domains_dets{$domain}}){
 	        	foreach my $stat (keys %{$domains_dets{$domain}{$genome}}){
 	        		$z_scores{$genome}{$stat} = (($domains_dets{$domain}{$genome}{$stat} - $stats{$stat}{'avg'})/$stats{$stat}{'std'});
+	        		
 	        		if(exists($id_lookup{$stat})){
 	        			print "$genome\t$id_lookup{$stat}\t$z_scores{$genome}{$stat}\n";
 	        		}else{
@@ -152,6 +182,8 @@ my %all_dets;
 	        	}
 		}	
 	}
+	}
+	
 	
 	#print Dumper \%z_scores;
 	
