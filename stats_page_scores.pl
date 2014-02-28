@@ -97,7 +97,7 @@ my %all_dets;
 	###11  domain_combinations,12  families,13  unique_architectures,14  domain,15  taxonomy
  	if(defined($seed)){
  		my $genome = join("','",@result);
- 		$sth =   $dbh->prepare( "select genome.genome,genes,matches,percent,coverage,domains,superfamilies,average_family_size,percent_duplication,average_length,average_hit_length,domain_combinations,families,unique_architectures,domain,taxonomy from info,genome where genome.genome = info.genome and include in ('y','s') and genome in ('$genome');" );
+ 		$sth =   $dbh->prepare( "select genome.genome,genes,matches,percent,coverage,domains,superfamilies,average_family_size,percent_duplication,average_length,average_hit_length,domain_combinations,families,unique_architectures,domain,taxonomy from info,genome where genome.genome = info.genome and include in ('y','s') and genome.genome in ('$genome');" );
 	}else{
 		$sth = $dbh->prepare( "select genome.genome,genes,matches,percent,coverage,domains,superfamilies,average_family_size,percent_duplication,average_length,average_hit_length,domain_combinations,families,unique_architectures,domain,taxonomy from info,genome where genome.genome = info.genome and include in ('y','s');" );	
 	}
