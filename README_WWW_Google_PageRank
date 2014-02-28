@@ -1,0 +1,19 @@
+The google_page_rank.pl program uses the WWW::Google::PageRank
+module developed by Yuri Karaban to query Google's server for
+the page rank.  This Perl module is available from the CPAN
+archive (or any of its mirrors) at:
+
+    http://search.cpan.org/src/YKAR/WWW-Google-PageRank-0.17/lib/WWW/Google/PageRank.pm
+    
+Since many potential users of this program may not have this module
+installed and not wish to install such a module system-wide (or lack
+the permissions to do so), a copy of version 0.17 of this module is
+included in this distribution.  As long as your installation of Perl
+is configured to search for modules in the current directory and you
+run page_rank.pl from there, you needn't install
+WWW::Google::PageRank.
+
+The WWW::Google::PageRank module, in turn, requires the LWP::UserAgent
+module and its dependencies to function; these are installed in most
+modern Perl distributions.  If your system does not include them,
+you'll need to track them down in CPAN and install them yourself.

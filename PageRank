@@ -1,0 +1,9 @@
+#! /bin/sh
+
+#   Change the path name in the following statement to the
+#   absolute path where you installed the page_rank.pl
+#   programs and the subdirectories included in the
+#   distribution.
+    cd /server/bin/httpd/cgi-executables/GooglePageRank
+
+    perl page_rank.pl
