@@ -1,0 +1,826 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>PageRank: Tool for Querying Google&trade; Page Rank</title>
+<style type="text/css">
+    a:link,  a:visited {
+	background-color: inherit;
+    	color: rgb(0%, 0%, 80%);
+	text-decoration: none;
+    }
+
+    a:hover  {
+    	background-color:  rgb(30%, 30%, 100%);
+    	color: rgb(100%, 100%, 100%);
+    }
+    
+    a:active {
+    	color: rgb(100%, 0%, 0%);
+    	background-color:  rgb(30%, 30%, 100%);
+    }
+    
+    a.i:link, a.i:visited, a.i:hover {
+    	background-color:  inherit;
+    	color: inherit;
+	text-decoration: none;
+    }
+    
+    blockquote.download {
+    	background-color: rgb(100%, 100%, 75%);
+	color: inherit;
+	padding: 10px;
+	text-align: justify;
+    }
+    
+    blockquote.rights {
+	text-align: justify;
+	font-size: smaller;
+	font-family: sans-serif;
+    }
+    
+    blockquote.sample {
+	background-color: rgb(224, 224, 255);
+	color: inherit;
+	padding: 10px;
+	text-align: justify;
+    }
+    
+    body {
+    	background-color: #FFFFFF;
+	color: #000000;
+        margin-left: 15%;
+        margin-right: 10%;
+    }
+    
+    th.d {
+    	text-align: left;
+	vertical-align: top;
+	width: 10em;
+    }
+    
+    th.f {
+    	text-align: left;
+	vertical-align: top;
+	font-weight: normal;
+	width: 6em;
+    }
+    
+    .l dt, li {
+    	margin-top: 1ex;
+    }
+    
+    img.border0 {
+    	border: 0px;
+    }
+    
+    p.c {
+    	text-align: center;
+    }
+    
+    p,dd, li, blockquote, td {
+    	text-align: justify;
+    }
+    
+    pre.code {
+    	font-size: smaller;
+	padding: 10px;
+	background-color: rgb(200, 255, 200);
+	color: inherit;
+    }
+    
+    pre.sample {
+    	font-size: smaller;
+	padding: 10px;
+	background-color: rgb(224, 224, 255);
+	color: inherit;
+    }
+    
+    td.smallcode {
+    	padding-top: 0px;
+	margin-top: 0px;
+	border-top: 0px;
+	text-align: right;
+	font-size: smaller;
+    }
+     
+    td.smallpre {
+    	padding-top: 0px;
+	margin-top: 0px;
+	border-top: 0px;
+	font-size: smaller;
+	white-space: pre;
+	font-family: monospace;
+    }
+   
+    td.continuation {
+    	padding-top: 0px;
+	margin-top: 0px;
+	border-top: 0px;
+    }
+    
+    table.ranks th {
+    	font-family: monospace;
+	padding-right: 8px;
+    	text-align: right;
+    }
+    
+    table.sample, table.ranks {
+	background-color: rgb(224, 224, 255);
+	color: inherit;
+	padding: 10px;
+    }
+    
+    table.sample th {
+    	font-family: monospace;
+	text-align: left;
+	padding-right: 12px;
+    }
+    
+    .subsuper sub, .subsuper sup {
+    	line-height: 0px;
+    }
+    
+    table.footer {
+    	width: 100%;
+    }
+    
+    table.footer td.left {
+    	width: 50%;
+	text-align: left;
+	font-style: italic;
+	vertical-align: top;
+    }
+    
+    table.footer td.right {
+    	width: 50%;
+	text-align: right;
+	vertical-align: top;
+    }
+    
+    table.footer table.buttons {
+	margin-left: auto;
+    }
+    
+    table.footer table.buttons td {
+	text-align: center;
+    }
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="keywords" content="pagerank, query, google, page. rank, show, display, utility, CGI, form, meter, perl" />
+<meta name="description" content="PageRank: Tool for Querying Google Page Rank" />
+<meta name="author" content="John Walker" />
+<meta name="robots" content="index" />
+</head>
+
+<body>
+
+<center>
+<h1>Google<sup>&trade;</sup> Page Rank Query</h1>
+by <a href="/">John Walker</a>
+</center>
+
+<p />
+<hr />
+
+<p>
+The order in which a Google search displays results, apart
+from &ldquo;sponsored links&rdquo; and promotion of Google's
+own offerings over those of others, depends upon the
+&ldquo;<a href="http://www.google.com/technology/"
+target="PageRank_Aux">PageRank&trade;</a>&rdquo; of
+the item.  While the basic algorithm is described in
+the 1998 paper &ldquo;<a href="http://infolab.stanford.edu/~backrub/google.html"
+target="PageRank_Aux">The Anatomy of a Large-Scale Hypertextual
+Web Search Engine</a>&rdquo; by Google founders
+Sergey Brin and Lawrence Page, the details of the exact algorithm
+used by Google are closely guarded and changed from
+time to time with the goal of defeating attempts to
+&ldquo;game&rdquo; the ranking algorithm.
+Despite persistent claims to the contrary, <a
+href="http://www.google.com/technology/pigeonrank.html"
+target="PageRank_Aux">pigeons</a> play no part in Google's
+ranking of pages.
+</p>
+
+<p>
+Given how much of the traffic to many Web sites is directed there by
+search engines and Google in particular, most site managers are keenly
+interested in the ranking of pages at their own site and how they
+compare with the competition.  Google does not provide an option to
+display the PageRank of sites in search results, but a variety of
+browser plug-ins, query services, and meters one can embed within Web
+pages which display PageRank have been developed.  Many of these
+solutions have disadvantages: they may only work with certain
+browsers, disclose a user's search activity to a third party, or limit
+the number of requests and/or force the user to solve a so-called
+<a href="http://www.captcha.net/" target="PageRank_Aux">CAPTCHA</a>
+puzzle for each query.
+</p>
+
+<p>
+This page describes a utility, written in
+<a href="http://www.perl.org/" target="PageRank_Aux">Perl</a>,
+which allows you to display Google PageRank information in
+a variety of ways:
+</p>
+
+<ul>
+    <li>Query the rank of a page from the command line
+    	by specifying the page's URL.</li>
+    <li>Display page rank for a URL entered in a
+    	Web query form, submitted to a CGI application
+	running on a server.</li>
+    <li>Show the current ranking of a page by a graphical
+    	meter embedded within the page.</li>
+    <li>Show the ranking of arbitrary pages (for example,
+    	a comparison chart of various pages) by a
+	collection of meters.</li>
+</ul>
+
+<h3>Command Line Queries</h3>
+
+<p>
+The simplest way to request the Google page rank for a URL
+is to invoke the <tt>page_rank.pl</tt> utility from the
+command line (shell) prompt.  You can display the page rank
+by navigating to the directory where you've extracted the utility
+and specifying the URL whose page rank you wish on
+the command line.  For example, here are several queries in
+succession (page ranks were those returned when this example
+was run on January 1st, 2007; they may have changed subsequently).
+The &ldquo;<tt>$</tt>&rdquo; character represents your system's command
+prompt; do not type it before the command.
+</p>
+
+<pre class="sample">
+    $ ./page_rank.pl http://www.google.com/
+    10
+    $ ./page_rank.pl http://www.gutenberg.org/
+    8
+    $ ./page_rank.pl http://www.spam.com/     
+    7
+</pre>
+
+<p>
+The page rank (a number between &minus;1 [indicating no ranking is
+available] and 10 [the highest]) is simply written to standard output
+without any adornment.  This makes it easy to query page rankings in
+scripts using the &ldquo;back-tick&rdquo; mechanism.  Since command
+line requests are processed on your own computer and obtain the
+rankings directly from Google, there are no restrictions (apart from
+any imposed by Google) on the number of requests you can make or which
+pages you query.
+</p>
+
+<h3>Web Query Form</h3>
+
+<p>
+If you manage a Web server and have the ability to install Perl CGI
+programs on it, you can implement a Web form like the following which
+will allow you and others you designate to obtain the page rank of
+arbitrary Web pages from any browser.  Simply enter the URL
+for the page in the &ldquo;Address&rdquo; box and press the
+&ldquo;Get Page Rank&rdquo; button.  If you install such a form on a
+public Web server, you may find it quickly discovered and deluged
+by a multitude of requests submitted by total strangers.  To keep
+this from happening, requests are processed only if they specify
+an &ldquo;API&nbsp;Key&rdquo; which identifies the requester as
+authorised.  This can be any sequence of characters you designate,
+but a user's E-mail address is an easy to remember choice.
+</p>
+
+<p>
+In the following example, I've specified the Fourmilab site and an API
+Key of &ldquo;<tt>chef@ratburger.org</tt>&rdquo; (no, this is not a
+valid E-mail address!).  To keep <em>this</em> form from being
+hijacked by third parties, the fields are read-only and this
+particular API Key can be used only to obtain the page rank of the
+<tt>www.fourmilab.ch</tt> site.
+</p>
+
+<blockquote class="sample">
+    <form method="get" action="/cgi-bin/PageRank"
+    	target="PageRank_Aux">
+    <p>
+	<input type="hidden" name="html" value="1" />
+
+	Address:&nbsp;<input type="text" name="uri" size="60"
+	    maxlength="1024" value="http://www.fourmilab.ch/"
+	    readonly="readonly" />
+	</p><p>API&nbsp;Key:&nbsp;<input type="text" name="apikey"
+	    size="24" value="chef@ratburger.org"
+	    readonly="readonly" />
+    </p>
+    <p class="c">
+	<input type="submit" value=" Get Page Rank " /> &nbsp;
+	<input type="reset" value=" Reset " />
+    </p>
+
+    </form>
+</blockquote>
+
+<p>
+The result returned from a Web form inquiry embeds the API Key as
+a hidden form field.  You can bookmark the result URL and use it
+to make subsequent requests without the need to enter your API Key
+each time.
+</p>
+
+<h3>Embedded Page Rank Meters</h3>
+
+<p>
+Invoking the page rank CGI program within an HTML image
+(<tt>&lt;img&gt;</tt>) element allows you to include a graphical page
+rank meter showing the current rank of the page or any other page you
+designate.  For example, here are the rankings of four sites.
+</p>
+
+<center>
+<table class="sample">
+    <tr>
+    	<th>http://www.w3.org/</th>
+	<td><img src="/cgi-bin/PageRank?uri=http://www.w3.org/"
+         alt="PageRank: http://www.w3.org/"
+         width="80" height="15" /></td>
+    </tr>
+    <tr>
+    	<th>http://www.cnn.com/</th>
+	<td><img src="/cgi-bin/PageRank?uri=http://www.cnn.com/"
+         alt="PageRank: http://www.cnn.com/"
+         width="80" height="15" /></td>
+    </tr>
+    <tr>
+    	<th>http://www.fourmilab.ch/</th>
+	<td><img src="/cgi-bin/PageRank?uri=http://www.fourmilab.ch/"
+         alt="PageRank: http://www.fourmilab.ch/"
+         width="80" height="15" /></td>
+    </tr>
+    <tr>
+    	<th>http://www.drudgereport.com/</th>
+	<td><img src="/cgi-bin/PageRank?uri=http://www.drudgereport.com/"
+         alt="PageRank: http://www.drudgereport.com/"
+         width="80" height="15" /></td>
+    </tr>
+</table>
+</center>
+
+<p>
+The rankings shown in the meters are &ldquo;live&rdquo;&mdash;they were
+retrieved from Google when your browser displayed this page; if the rankings
+should change, the meters will reflect this when the page is refreshed.
+If you have installed the page rank query program as &ldquo;<tt>PageRank</tt>&rdquo;
+in the <tt>cgi-bin</tt> directory of your Web server, you can include
+a meter which will show the page rank of the page which includes it with
+the following HTML:
+</p>
+
+<pre class="code">
+    &lt;a href="http://www.fourmilab.ch/webtools/PageRank/"&gt;&lt;img
+    	 src="/cgi-bin/PageRank?uri=referer"
+         alt="Google PageRank of this page"
+         width="80" height="15" border="0" /&gt;&lt;/a&gt;
+</pre>
+
+<p>
+To display the rank of a different page, specify its URL in the
+&ldquo;<tt>uri</tt>&rdquo; argument:
+</p>
+
+<pre class="code">
+    &lt;a href="http://www.fourmilab.ch/webtools/PageRank/"&gt;&lt;img
+    	 src="/cgi-bin/PageRank?uri=http://www.southparkstudios.com/"
+         alt="Google PageRank of South Park Studios"
+         width="80" height="15" border="0" /&gt;&lt;/a&gt;
+</pre>
+
+<p>
+In both of these examples I have supplied a &ldquo;courtesy
+back-link&rdquo; to this page so folks who are interested in
+installing page rank meters in their own pages can discover how by
+clicking the meter in your page.  Such back-links are appreciated but
+not a requirement for using the page rank meter.
+</p>
+
+<p>
+All possible values for the page rank meter and their correspondence with
+numerical page ranks are as follows.
+</p>
+
+<center>
+<table class="ranks">
+    <tr>
+    	<th>&minus;1</th>
+	<td><img src="images/pagerankq.png"
+         alt="PageRank not available" width="80" height="15" /></td>
+	<th>&nbsp; &nbsp;</th>
+    	<th>3</th>
+	<td><img src="images/pagerank3.png"
+         alt="PageRank 3" width="80" height="15" /></td>
+	<th>&nbsp; &nbsp;</th>
+    	<th>7</th>
+	<td><img src="images/pagerank7.png"
+         alt="PageRank 7"
+         width="80" height="15" /></td>
+    </tr>
+    <tr>
+    	<th>0</th>
+	<td><img src="images/pagerank0.png"
+         alt="PageRank 0" width="80" height="15" /></td>
+	<th>&nbsp; &nbsp;</th>
+    	<th>4</th>
+	<td><img src="images/pagerank4.png"
+         alt="PageRank 4" width="80" height="15" /></td>
+	<th>&nbsp; &nbsp;</th>
+    	<th>8</th>
+	<td><img src="images/pagerank8.png"
+         alt="PageRank 8" width="80" height="15" /></td>
+    </tr>
+    <tr>
+    	<th>1</th>
+	<td><img src="images/pagerank1.png"
+         alt="PageRank 1" width="80" height="15" /></td>
+	<th>&nbsp; &nbsp;</th>
+    	<th>5</th>
+	<td><img src="images/pagerank5.png"
+         alt="PageRank 5" width="80" height="15" /></td>
+	<th>&nbsp; &nbsp;</th>
+    	<th>9</th>
+	<td><img src="images/pagerank9.png"
+         alt="PageRank 9" width="80" height="15" /></td>
+    </tr>
+    <tr>
+    	<th>2</th>
+	<td><img src="images/pagerank2.png"
+         alt="PageRank 2" width="80" height="15" /></td>
+	<th>&nbsp; &nbsp;</th>
+    	<th>6</th>
+	<td><img src="images/pagerank6.png"
+         alt="PageRank 6" width="80" height="15" /></td>
+	<th>&nbsp; &nbsp;</th>
+    	<th>10</th>
+	<td><img src="images/pagerank10.png"
+         alt="PageRank 10" width="80" height="15" /></td>
+    </tr>
+</table>
+</center>
+
+
+<h2>Downloading and Installation</h2>
+
+<blockquote class="download">
+    Note: The Web-based page rank query is a Common Gateway Interface (CGI) program written
+    in the <a href="http://www.perl.org/" target="PageRank_Aux">Perl</a> language.
+    Installing a CGI program requires detailed
+    knowledge of the Web server configuration of the system on which
+    it is to be installed, and may require administrative (super-user)
+    privilege to install.  Since Web server configurations differ
+    widely from system to system, there's no cookbook approach to installing
+    a program such as this&mdash;you need to <em>understand</em> what you're
+    doing, and know how to track down and fix problems based on error
+    messages in the HTTP server error log.
+</blockquote>
+
+To install the page rank query utility on your Web server, perform the following steps.
+
+<p />
+
+<ol class="l">
+
+    <li>    Download the distribution archive:
+    	    <blockquote>
+	    	<b><tt><a href="download/page_rank-1.1.tar.gz">page_rank-1.1.tar.gz</a></tt></b>
+	    </blockquote>
+	    </li>
+	    
+    <li>    Uncompress and extract the archive into a new empty directory.  This
+    	    directory may be located anywhere on your Web host, but must be
+	    readable by the Web server application.  It is best not to
+	    install the distribution directly into the server's CGI program
+	    directory.</li>
+
+    <li>    Edit the <tt>page_rank.pl</tt> program.
+    	    The first line specifies the location
+	    of the Perl interpreter on your system; on Unix-like systems you can
+	    determine this with the shell command &ldquo;<tt>which&nbsp;perl</tt>&rdquo;.  This location
+	    should be entered on the first line of <tt>page_rank.pl</tt>, following the
+	    &ldquo;#!&nbsp;&rdquo; characters.  Review the
+	    <a href="#detailed">Detailed Configuration</a> section below
+	    and configure the variables at the top of the program for
+	    the security options appropriate for your site.</li>
+	    
+    <li>    Save the modified <tt>page_rank.pl</tt> file.</li>
+    
+    <li>    Test the <tt>page_rank.pl</tt> file by invoking it from the
+    	    command line with a URL argument such as:
+    	    <blockquote>
+	    	<tt>./page_rank.pl http://www.fourmilab.ch/</tt>
+	    </blockquote>
+	    If you encounter problems (bad path to the Perl interpreter,
+	    missing Perl modules, etc.) correct them.  You will have to
+	    install the Perl modules
+	    <tt><a href="http://search.cpan.org/~gaas/libwww-perl-5.834/lib/LWP/UserAgent.pm"
+	    target="PageRank_Aux">LWP::UserAgent</a></tt> and
+	    <tt><a href="http://search.cpan.org/~gaas/URI-1.59/URI/Escape.pm"
+	    target="PageRank_Aux">URI::Escape</a></tt>
+	    if they are not present on your machine.
+	    </li>
+    
+    <li>    Edit the <tt>PageRank</tt> shell script.  Replace the path
+    	    name on the <tt>cd</tt> command with the full path of the
+	    directory in which you installed <tt>page_rank.pl</tt>
+	    and the subdirectories from the distribution.</li>
+	    
+    <li>    Copy the <tt>PageRank</tt> script into your Web server's CGI binaries directory.
+	    Make sure the program has execute permission for all users
+	    (on Unix-like systems, you can use the command
+	    &ldquo;<tt>chmod&nbsp;755&nbsp;PageRank</tt>&rdquo; set
+	    global execute permission).</li>
+	    
+</ol>
+
+<h2>Creating Custom Web Query Forms</h2>
+
+<p>
+While you can obtain a blank page rank query form by directly invoking
+the CGI program with no arguments, you may wish to embed a query form
+in a page on your site, optionally specifying custom arguments for
+the request.  A basic request form may be added with the following
+HTML code:
+</p>
+
+<pre class="code">
+    &lt;form method="get" action="/cgi-bin/PageRank" target="_blank"&gt;
+    &lt;p&gt;
+	&lt;input type="hidden" name="html" value="1" /&gt;
+	Address:&amp;nbsp;&lt;input type="text" name="uri" size="60"
+	    maxlength="1024" value="" /&gt;
+	&lt;/p&gt;&lt;p&gt;API&amp;nbsp;Key:&amp;nbsp;&lt;input type="text" name="apikey"
+	    size="24" value="" /&gt;
+    &lt;/p&gt;
+    &lt;p class="c"&gt;
+	&lt;input type="submit" value=" Get Page Rank " /&gt; &nbsp;
+	&lt;input type="reset" value=" Reset " /&gt;
+    &lt;/p&gt;
+    &lt;/form&gt;
+</pre>
+
+<p>
+If your server uses a different CGI program directory, adjust the
+&ldquo;<tt>action</tt>&rdquo; attribute in the <tt>form</tt> tag
+accordingly.  You may change the &ldquo;<tt>method</tt>&rdquo; 
+for the form to <tt>post</tt> if you wish; this will keep the API Key
+from being displayed in the browser's URL bar, but make it more
+difficult for users to bookmark queries.  You're free to change the label
+(&ldquo;<tt>value</tt>&rdquo;) on the submit button to whatever you
+wish, or use a graphical button instead of a text button.
+</p>
+
+<h3>Customising Form Requests</h3>
+
+<p>
+You can customise the behaviour of PageRank by including the
+following <tt>hidden</tt> input fields within the form which invokes
+the script.
+</p>
+
+<dl class="l">
+
+<dt><tt>&lt;input type="hidden" name="debug" value="1"&nbsp;/&gt;</tt></dt>
+    <dd>The CGI program's environment variables will be displayed
+    in the reply document.  This allows seeing how the server passed
+    arguments to the program and how they were parsed internally, and
+    can be useful when diagnosing configuration problems.
+    </dd>
+
+<dt><tt>&lt;input type="hidden" name="html" value="1"&nbsp;/&gt;</tt></dt>
+    <dd>The result will be returned as an HTML document
+    (<a href="http://www.w3.org/TR/xhtml1/"
+    	target="PageRank_Aux">XHTML 1.0</a> Strict
+    DTD to be precise).  The result document contains an address field
+    and request button which allows you to make subsequent requests
+    using the same API Key supplied in the initial request.
+    </dd>
+
+<dt><tt>&lt;input type="hidden" name="text" value="1"&nbsp;/&gt;</tt></dt>
+    <dd>The page rank will be returned as a simple number (&minus;1 to 10) in
+    a document of &ldquo;<tt>text/plain</tt>&rdquo; type.  You can
+    use this specification when obtaining page ranks within a script which
+    invokes a command line Web client such as
+    <a href="http://www.gnu.org/software/wget/" target="PageRank_Aux">Wget</a>
+    or <a href="http://curl.haxx.se/" target="PageRank_Aux">cURL</a>.
+    If neither <tt>html</tt> or <tt>text</tt> mode is specified, the
+    result will be an &ldquo;<tt>image/png</tt>&rdquo; document
+    containing the graphical page rank meter.
+    </dd>
+
+<dt><tt>&lt;input type="hidden" name="apikey" value="<em>keytext</em>"&nbsp;/&gt;</tt></dt>
+    <dd>This argument allows you to pre-specify the API Key for a
+    	request.  <em>Do not</em> use this specification in a page
+	available to the public, as it will defeat the protection
+	the API Key is intended to provide!   You may wish to use
+	this specification in a request form stored on your local
+	computer and accessed with a <tt>file:</tt> URL to avoid the
+	need to enter your API key for each request.
+    </dd>
+
+<dt><tt>&lt;input type="hidden" name="uri" value="<em>URI</em>"&nbsp;/&gt;</tt></dt>
+    <dd>You can use this specification to specify the URI/URL
+    (Web address of the page whose rank you wish, for example:
+    <tt>http://www.fourmilab.ch/</tt>) instead of allowing the user
+    to enter the address in a text field.  If set to the special
+    value &ldquo;<tt>referer</tt>&rdquo;, the URL of the page containing
+    the request form will be used automatically, which permits you to
+    include page rank meters on a collection of pages without the need
+    to specify the specific URL for each.
+    </dd>
+</dl>
+
+<h2><a name="detailed" class="i">Detailed Configuration</a></h2>
+
+<p>
+You can customise the configuration of <tt>page_rank.pl</tt> in
+various ways by changing variable definitions at the start of the
+script.
+</p>
+
+<table width="80%" cellpadding="6" align="center">
+	
+<tr>
+<th class="d"><b><tt><a name="restrictReferer" class="i">$restrictReferer</a></tt></b></th>
+    <td>If <tt>$restrictReferer</tt> is non-null, it is used as a regular
+    	expression to test the <tt>HTTP_REFERER</tt> field received from
+    	the Web server.  This can (and should) be used to restrict access
+    	to pages originating at the site where it's hosted.
+    	If your site has several aliases (<tt>ratburger.org</tt>, <tt>ratburger.net</tt>,
+    	etc.) or permits access by IP address or IP address range, you'll
+    	have to craft a regular expression which matches everything you
+    	may see as a referer.  Here, for example, is the declaration used
+	for the Fourmilab server:
+    </td>
+</tr>
+
+<tr>
+<td></td>
+<td class="smallpre">my $restrictReferer =
+	qr{^http://((((www|server\d)\.)?
+	   fourmilab\.
+	   (ch|com|net|org|to))|
+	   193\.8\.230\.\d+)/}x;
+</td>
+</tr>
+
+<tr>
+<th>&nbsp;</th>
+<td class="continuation">
+	Please note that while <tt>$restrictReferer</tt> provides protection
+	against na&iuml;ve users who hijack your server's PageRank
+	application by embedding references to it in their own Web
+	pages, your server is still subject to abuse by clever
+	freeloaders who use programs like
+    	<a href="http://www.gnu.org/software/wget/" target="PageRank_Aux">Wget</a>
+    	and <a href="http://curl.haxx.se/" target="PageRank_Aux">cURL</a>
+	or Web programming toolkits which allow forging the
+	referring page specification.  To guard against such
+	pocket-picking, use a <tt>$restrictURI</tt> (described
+	below) to limit queries to pages on your own site or those
+	referenced in your own pages.
+</td>
+</tr>
+		
+<tr>
+<th class="d"><b><tt><a name="restrictURI" class="i">$restrictURI</a></tt></b></th>
+    <td>If <tt>$restrictURI</tt> is non-null, it is used as a regular
+    expression to test the URI/URL for which the query is being
+    made.  Only if it matches is the request processed; otherwise
+    the query is aborted without any indication of the reason to the
+    (ab)user.  (The site manager is alerted to the incident by a
+    message in the HTTP server error log.)  To restrict queries to pages
+    on the <tt>fourmilab.ch</tt> site, one might use:
+    </td>
+</tr>
+
+<tr>
+<td></td>
+<td class="smallpre">my $restrictReferer =
+    qr{^http://(www\.)?fourmilab\.ch/};
+</td>
+</tr>
+
+<tr>
+<th class="d"><b><tt><a name="API_keys" class="i">%API_keys</a></tt></b></th>
+    <td>This hash is initialised to one or more key/value pairs
+    	where the key(s) are the API Keys accepted by Web form
+	queries and the values can be anything (I just set
+	them to the number 1).  API Keys can be any string value
+	you can enter in an HTML text field.  If you're granting
+	access to your Web query form to individual visitors to
+	your site, you might consider using their E-mail addresses
+	as API keys; that will be easy for the visitors to remember
+	and identify them when you're reviewing the list.  If
+	your own E-mail address is well known and associated with
+	the site on which the form is published, it's unwise to use it
+	as your own API key since it's easy for an interloper to
+	guess.  Instead, it's wiser to choose a difficult to guess
+	sequence as you'd use for a password; you can always bookmark
+	a result page with the API key embedded to avoid having to
+	enter it every time.  Here is a specification which grants
+	access to three users, one with a password-like key
+	(generated by
+	<a href="/hotbits" target="PageRank_Aux">HotBits</a>)
+	and two via their E-mail addresses.
+    </td>
+</tr>
+ 
+<tr>
+<td></td>
+<td class="smallpre">my %API_keys = ( 'hXGZ*.+GqI%y', 1,
+    	    	 'distims@gostak.org', 1,
+		 'ernst@blohard.com', 1 );
+</td>
+</tr>
+<tr>
+<th>&nbsp;</th>
+<td class="continuation">
+	If you do not specify any API Keys you will not be able
+	to make requests via the Web form interface.
+</td>
+</tr>
+
+</table>
+
+
+<h2>Acknowledgements</h2>
+
+<p>
+This program uses Yuri Karaban's
+<tt><a href="http://search.cpan.org/~ykar/WWW-Google-PageRank-0.17/lib/WWW/Google/PageRank.pm"
+    target="PageRank_Aux">WWW::Google::PageRank</a></tt>
+Perl module to obtain page rankings from Google's server.
+That module, in turn, uses the
+<tt><a href="http://search.cpan.org/~gaas/libwww-perl-5.834/lib/LWP/UserAgent.pm"
+target="PageRank_Aux">LWP::UserAgent</a></tt> and
+<tt><a href="http://search.cpan.org/~gaas/URI-1.59/URI/Escape.pm"
+target="PageRank_Aux">URI::Escape</a></tt> modules, both developed by
+Gisle Aas.
+</p>
+
+<p>
+Google and PageRank are trademarks of Google Inc.
+</p>
+
+
+<p />
+<hr />
+
+<p />
+<blockquote class="rights">
+     This software is in the public domain.  Permission to use, copy,
+     modify, and distribute this software and its documentation for
+     any purpose and without fee is hereby granted, without any
+     conditions or restrictions.  This software is provided &ldquo;as is&rdquo;
+     without express or implied warranty.
+</blockquote>
+
+<table class="footer">
+<tr>
+<td class="left">
+by <a href="/">John Walker</a><br />
+January, 2007<br />
+Updated: November, 2011
+</td>
+<td class="right">
+    <table class="buttons">
+    <tr><td>
+    <form id="feedback" method="post" action="/cgi-bin/FeedbackForm.pl">
+    <div>
+    <input type="hidden" name="pagetitle" value="PageRank" />
+    <input type="hidden" name="backlink" value="Back to &lt;cite&gt;PageRank&lt;/cite&gt;" />
+    <input type="submit" value=" Send Feedback " />
+    </div>
+    </form>
+    </td></tr>
+    <tr><td>
+    <a href="http://validator.w3.org/check?uri=referer"
+       target="Fourmilab_Validation"><img
+       src="/images/icons/valid-xhtml10.png"
+       class="border0"
+       alt="Valid XHTML 1.0" height="31" width="88" /></a>
+
+    &nbsp;
+
+     <a href="http://jigsaw.w3.org/css-validator/check/referer"
+       target="Fourmilab_Validation"><img
+       src="/images/icons/vcss.png" 
+       class="border0"
+       alt="Valid CSS"  height="31" width="88" /></a>
+    </td></tr>
+   </table>
+</td>
+</tr>
+</table>
+
+<h3><a href="/">Fourmilab Home Page</a></h3>
+
+</body>
+</html>
