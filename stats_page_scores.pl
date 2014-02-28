@@ -28,6 +28,7 @@ my %all_dets;
  	my $sth =   $dbh->prepare( "select genome.genome,genes,matches,percent,coverage,domains,superfamilies,average_family_size,percent_duplication,average_length,average_hit_length,domain_combinations,families,unique_architectures,domain,taxonomy from info,genome where genome.genome = info.genome and include in ('y','s');" );
 	$sth->execute;
 	while (my @temp = $sth->fetchrow_array ) {
+		print Dumper \@temp;
 		$domains_dets{$temp[14]}{$temp[0]}{'percent'} = $temp[3];
 		$domains_dets{$temp[14]}{$temp[0]}{'coverage'} = $temp[4];
 		$domains_dets{$temp[14]}{$temp[0]}{'domains'} = $temp[5];
