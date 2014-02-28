@@ -21,7 +21,7 @@ $dbh = DBI->connect( $dsn, "$user");
 
 my %domains_dets;
 my %all_dets;
-	my $dbh = rackham::DBConnect('superfamily','rackham','Cadsas82');
+	my $dbh = DBConnect('superfamily','rackham','Cadsas82');
 	### 0 genome.genome,1  genes,2  matches,3  percent,4  coverage,5  domains,6  superfamilies
 	###7  average_family_size,8  percent_duplication,9  average_length,10  average_hit_length
 	###11  domain_combinations,12  families,13  unique_architectures,14  domain,15  taxonomy
