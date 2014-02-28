@@ -196,7 +196,7 @@ my $target_species = $ARGV[1];
 
 if($seed eq 'allgenomes'){
 	my $dbh = DBConnect('superfamily','rackham');
-	my $sth =   $dbh->prepare("select distinct(genome) from genome where inclue in (y,s);");
+	my $sth =   $dbh->prepare("select distinct(genome) from genome where include in (y,s);");
 	$sth->execute;
 	while (my @temp = $sth->fetchrow_array ) {
 		calculate_stuff($temp[0],$target_species);
