@@ -123,9 +123,13 @@ my %all_dets;
 		foreach my $stat (keys %all_dets){
 			$stats{$stat}{'avg'} = &average($all_dets{$stat});
 			$stats{$stat}{'std'} = &stdev($all_dets{$stat});
+			if($domains_dets{$seed}{$stat} == 0){
+				print STDERR "$seed, $stat \n";
+			}else{
 			my $diff =  $domains_dets{$seed}{$stat} - $stats{$stat}{'avg'};
 			my $perc = ($diff/$domains_dets{$seed}{$stat})*100;
 			print "$seed\t$stat\t$perc\n";
+			}
 		}
 		
 		
@@ -192,7 +196,7 @@ my $target_species = $ARGV[1];
 
 if($seed eq 'allgenomes'){
 	my $dbh = DBConnect('superfamily','rackham');
-	my $sth =   $dbh->prepare("select distinct(genome) from genome;");
+	my $sth =   $dbh->prepare("select distinct(genome) from genome where inclue in (y,s);");
 	$sth->execute;
 	while (my @temp = $sth->fetchrow_array ) {
 		calculate_stuff($temp[0],$target_species);
