@@ -77,9 +77,12 @@ sub get_clade {
 }
 
 
-my $seed = $ARGV[0];
-my $target_species = $ARGV[1];
-my $type = $ARGV[2];
+
+
+
+sub calculate_stuff {
+my $seed = shift;
+my $target_species = shift;
 my $result = get_clade($seed,10);
 my @result = @{$result};
 
@@ -181,9 +184,21 @@ my %all_dets;
 		}	
 	}
 	}
+}
 	
-	
-	#print Dumper \%z_scores;
-	
+
+my $seed = $ARGV[0];
+my $target_species = $ARGV[1];
+
+if($seed eq 'all'){
+	my $dbh = DBConnect('pqi','rackham');
+	my $sth =   $dbh->prepare("select distinct(genome) from genome;");
+	$sth->execute;
+	while (my @temp = $sth->fetchrow_array ) {
+		calculate_stuff($temp[0],$target_species);
+	}	
+}else{
+	calculate_stuff($seed,$target_species);
+}	
 	
 
