@@ -190,8 +190,8 @@ my %all_dets;
 my $seed = $ARGV[0];
 my $target_species = $ARGV[1];
 
-if($seed eq 'all'){
-	my $dbh = DBConnect('pqi','rackham');
+if($seed eq 'allgenomes'){
+	my $dbh = DBConnect('superfamily','rackham');
 	my $sth =   $dbh->prepare("select distinct(genome) from genome;");
 	$sth->execute;
 	while (my @temp = $sth->fetchrow_array ) {
