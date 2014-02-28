@@ -96,7 +96,7 @@ my %all_dets;
 	###7  average_family_size,8  percent_duplication,9  average_length,10  average_hit_length
 	###11  domain_combinations,12  families,13  unique_architectures,14  domain,15  taxonomy
  	if(defined($seed)){
- 		my $genome;
+ 		my $genome = join("','",@result);
  		$sth =   $dbh->prepare( "select genome.genome,genes,matches,percent,coverage,domains,superfamilies,average_family_size,percent_duplication,average_length,average_hit_length,domain_combinations,families,unique_architectures,domain,taxonomy from info,genome where genome.genome = info.genome and include in ('y','s') and genome in '$genome';" );
 	}else{
 		$sth = $dbh->prepare( "select genome.genome,genes,matches,percent,coverage,domains,superfamilies,average_family_size,percent_duplication,average_length,average_hit_length,domain_combinations,families,unique_architectures,domain,taxonomy from info,genome where genome.genome = info.genome and include in ('y','s');" );	
@@ -138,7 +138,6 @@ my %all_dets;
 	while (my @temp = $sth->fetchrow_array ) {
 		$id_lookup{$temp[0]} = $temp[1];
 	}
-	print Dumper \%id_lookup;
 	my %z_scores;
 	
 	foreach my $domain (keys %domains_dets){
