@@ -121,7 +121,7 @@ my %all_dets;
 		foreach my $stat (keys %all_dets){
 			$stats{$stat}{'avg'} = &average($all_dets{$stat});
 			$stats{$stat}{'std'} = &stdev($all_dets{$stat});
-			my $diff = $stats{$stat}{'avg'} - $domains_dets{$seed}{$stat};
+			my $diff =  $domains_dets{$seed}{$stat} - $stats{$stat}{'avg'};
 			my $perc = ($diff/$domains_dets{$seed}{$stat})*100;
 			print "$seed\t$stat\t$perc\n";
 		}
