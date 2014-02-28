@@ -82,7 +82,6 @@ my $target_species = $ARGV[1];
 my $type = $ARGV[2];
 my $result = get_clade($seed,10);
 my @result = @{$result};
-print Dumper $result;
 
 
 
